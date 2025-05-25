@@ -23,11 +23,6 @@
       flex-direction: column;
       gap: 40px;
     }
-    .landmarks-bar {
-      text-align: center;
-      font-size: 24px;
-      margin-bottom: -20px;
-    }
     .river-scene {
       position: relative;
       height: 120px;
@@ -84,6 +79,19 @@
       z-index: 9999;
       display: none;
     }
+    .popup-message {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #004d40;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-size: 18px;
+      z-index: 10000;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -94,12 +102,9 @@
     <button id="addPersonBtn">Add Person</button>
   </div>
 
-  <div class="landmarks-bar">
-    🌉 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 📚 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🏛 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎼 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🎓
-  </div>
-
   <div class="tracker" id="tracker"></div>
   <canvas class="confetti" id="confetti"></canvas>
+  <div class="popup-message" id="popupMessage"></div>
 
   <script>
     const firebaseConfig = {
@@ -117,6 +122,24 @@
     const tracker = document.getElementById("tracker");
     const nameInput = document.getElementById("newName");
     const examsInput = document.getElementById("newExams");
+    const popup = document.getElementById("popupMessage");
+
+    const messages = [
+      "You're smashing it! 🧠",
+      "Another one down! 💥",
+      "Keep going, you're nearly there! 🚀",
+      "You got this! 💪",
+      "Finals fear you now. 😎"
+    ];
+
+    function showPopupMessage() {
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      popup.textContent = message;
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 3500);
+    }
 
     function launchConfetti() {
       const canvas = document.getElementById('confetti');
@@ -185,6 +208,7 @@
           if (personData.examsDone < personData.totalExams) {
             const newCount = personData.examsDone + 1;
             await personDoc.update({ examsDone: newCount });
+            showPopupMessage();
             if (newCount === personData.totalExams) launchConfetti();
           }
         };
