@@ -210,6 +210,26 @@
         alert('Please enter a name and valid exam number.');
       }
     }
+    const messages = [
+  "You're doing amazing, keep going! 🌟",
+  "Another step closer! You've got this! 💪",
+  "You're crushing it — exam by exam! 📘",
+  "Brilliant progress! Keep that momentum! 🚀",
+  "Oxford would be proud — keep punting! 🛶",
+  "Each click is a win — you're nearly there! 🎯",
+  "You're in the home stretch now! 🏁",
+  "Stay focused — excellence is near! 🎓",
+  "You're one exam wiser! 📚"
+];
+
+    function showPopupMessage() {
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      popup.textContent = message;
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.style.display = 'none';
+      }, 3500);
+    }
     function increment(index) {
       if (people[index].examsDone < people[index].totalExams) {
         people[index].examsDone++;
