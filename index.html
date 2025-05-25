@@ -17,62 +17,44 @@
       color: #004d40;
     }
     .tracker {
-      max-width: 800px;
+      max-width: 1000px;
       margin: 20px auto;
       display: flex;
       flex-direction: column;
-      gap: 20px;
-    }
-    .person {
-      background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #00695c;
-      color: white;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .info {
-      flex: 1;
+      gap: 40px;
     }
     .river-scene {
       position: relative;
-      height: 50px;
+      height: 120px;
       background: linear-gradient(to right, #ccefff, #a3e4f7);
-      border-radius: 25px;
+      border-radius: 60px;
       border: 2px solid #4db6ac;
-      overflow: hidden;
+      overflow: visible;
       margin-bottom: 10px;
-    }
-    .punt {
-      position: absolute;
-      top: 10px;
-      transition: left 0.5s ease;
-      font-size: 24px;
     }
     .landmarks {
       position: absolute;
-      top: -5px;
+      top: 10px;
       left: 0;
       width: 100%;
-      height: 100%;
+      height: 20px;
     }
     .landmarks span {
       position: absolute;
-      top: -10px;
-      font-size: 18px;
+      transform: translateX(-50%);
+      font-size: 24px;
+    }
+    .punt-track {
+      position: absolute;
+      top: 40px;
+      width: 100%;
+      height: 60px;
+    }
+    .punt {
+      position: absolute;
+      top: 0;
+      font-size: 24px;
+      transition: left 0.5s ease;
     }
     .controls {
       display: flex;
@@ -157,28 +139,46 @@
 
     function render(people) {
       tracker.innerHTML = '';
-      people.forEach((person) => {
+
+      const riverScene = document.createElement('div');
+      riverScene.className = 'river-scene';
+
+      const landmarks = document.createElement('div');
+      landmarks.className = 'landmarks';
+      landmarks.innerHTML = `
+        <span style="left: 0%">🌉</span>
+        <span style="left: 25%">📚</span>
+        <span style="left: 50%">🏛</span>
+        <span style="left: 75%">🎼</span>
+        <span style="left: 100%">🎓</span>
+      `;
+      riverScene.appendChild(landmarks);
+
+      const track = document.createElement('div');
+      track.className = 'punt-track';
+
+      people.forEach((person, i) => {
         const percent = Math.min((person.examsDone / person.totalExams) * 100, 100);
         const finished = person.examsDone === person.totalExams;
+        const punt = document.createElement('div');
+        punt.className = 'punt';
+        punt.style.left = `${percent}%`;
+        punt.style.top = `${(i % 5) * 20}px`;
+        punt.textContent = finished ? '🎓' : '🛶';
+        track.appendChild(punt);
+      });
 
-        const landmarks = `
-          <div class="landmarks">
-            <span style="left: 0%">🌉</span>
-            <span style="left: 25%">📚</span>
-            <span style="left: 50%">🏛</span>
-            <span style="left: 75%">🎼</span>
-            <span style="left: 100%">🎓</span>
-          </div>`;
+      riverScene.appendChild(track);
+      tracker.appendChild(riverScene);
+
+      people.forEach((person) => {
+        const finished = person.examsDone === person.totalExams;
 
         const div = document.createElement("div");
         div.className = "person";
         div.innerHTML = `
           <div class="avatar">${finished ? '🎓' : person.name[0]}</div>
           <div class="info">
-            <div class="river-scene">
-              ${landmarks}
-              <div class="punt" style="left: ${percent}%">🛶</div>
-            </div>
             <div class="controls">
               <strong>${person.name}</strong>
               <span>${person.examsDone} / ${person.totalExams} exams done</span>
