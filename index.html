@@ -7,7 +7,28 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, updateDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+    const messages = [
+      "You're doing amazing, keep going! 🌟",
+      "Another step closer! You've got this! 💪",
+      "You're crushing it — exam by exam! 📘",
+      "Brilliant progress! Keep that momentum! 🚀",
+      "Oxford would be proud — keep punting! 🛶",
+      "Each click is a win — you're nearly there! 🎯",
+      "You're in the home stretch now! 🏁",
+      "Stay focused — excellence is near! 🎓",
+      "You're one exam wiser! 📚"
+    ];
 
+    function showPopupMessage(name) {
+      const message = messages[Math.floor(Math.random() * messages.length)];
+      const popup = document.getElementById(`${name}-popup`);
+      popup.textContent = message;
+      popup.style.display = 'block';
+      setTimeout(() => {
+        popup.textContent = '';
+        popup.style.display = 'none';
+      }, 3500);
+    }
     const firebaseConfig = {
       apiKey: "AIzaSyDpeNORHi1DHk23DRS9GFjAFOahjiw4E1E",
       authDomain: "almost-there-60b1c.firebaseapp.com",
@@ -47,9 +68,9 @@
           <div class="avatar">${finished ? '🎓' : person.name[0]}</div>
           <div class="info">
             <div class="river-scene">
-              ${landmarks}
               <div class="punt" style="left: ${percent}%">🛶</div>
             </div>
+            <div class="messages" id="${person.name}-popup" style="display: none;"></div>
             <div class="controls">
               <strong>${person.name}</strong>
               <span>${person.examsDone} / ${person.totalExams} exams done</span>
@@ -72,6 +93,7 @@
           if (personData && personData.examsDone < personData.totalExams) {
             const newCount = personData.examsDone + 1;
             await updateDoc(personDoc, { examsDone: newCount });
+            showPopupMessage(personData.name);
             if (newCount === personData.totalExams) launchConfetti();
           }
         };
@@ -171,18 +193,12 @@
       top: 10px;
       transition: left 0.5s ease;
       font-size: 24px;
+      padding-left: 5px;
     }
-    .landmarks {
-      position: absolute;
-      top: -5px;
-      left: 0;
-      width: 100%;
-      height: 100%;
-    }
-    .landmarks span {
-      position: absolute;
-      top: -10px;
-      font-size: 18px;
+    .messages {
+      position: relative;
+      text-align: center;
+      font-weight: 700;
     }
     .controls {
       display: flex;
