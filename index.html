@@ -2,120 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Oxford Exam Progress Tracker</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, updateDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyDpeNORHi1DHk23DRS9GFjAFOahjiw4E1E",
-      authDomain: "almost-there-60b1c.firebaseapp.com",
-      projectId: "almost-there-60b1c",
-      storageBucket: "almost-there-60b1c.firebasestorage.app",
-      messagingSenderId: "651608453662",
-      appId: "1:651608453662:web:78e0452ca30c135fe7740f",
-      measurementId: "G-6FVP04T5BV"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-    const peopleCollection = collection(db, "people");
-
-    const tracker = document.getElementById("tracker");
-    const nameInput = document.getElementById("newName");
-    const examsInput = document.getElementById("newExams");
-
-    function render(people) {
-      tracker.innerHTML = '';
-      people.forEach((person) => {
-        const percent = Math.min((person.examsDone / person.totalExams) * 100, 100);
-        const finished = person.examsDone === person.totalExams;
-
-        const landmarks = `
-          <div class="landmarks">
-            <span style="left: 0%">🌉</span>
-            <span style="left: 25%">📚</span>
-            <span style="left: 50%">🏛</span>
-            <span style="left: 75%">🎼</span>
-            <span style="left: 100%">🎓</span>
-          </div>`;
-
-        const div = document.createElement("div");
-        div.className = "person";
-        div.innerHTML = `
-          <div class="avatar">${finished ? '🎓' : person.name[0]}</div>
-          <div class="info">
-            <div class="river-scene">
-              ${landmarks}
-              <div class="punt" style="left: ${percent}%">🛶</div>
-            </div>
-            <div class="controls">
-              <strong>${person.name}</strong>
-              <span>${person.examsDone} / ${person.totalExams} exams done</span>
-              <button data-id="${person.id}" class="increment-btn">Finished Exam</button>
-            </div>
-          </div>
-        `;
-        tracker.appendChild(div);
-      });
-
-      document.querySelectorAll(".increment-btn").forEach(button => {
-        button.onclick = async () => {
-          const id = button.dataset.id;
-          const personDoc = doc(db, "people", id);
-          const snapshot = await getDocs(peopleCollection);
-          let personData = null;
-          snapshot.forEach(docSnap => {
-            if (docSnap.id === id) personData = docSnap.data();
-          });
-          if (personData && personData.examsDone < personData.totalExams) {
-            const newCount = personData.examsDone + 1;
-            await updateDoc(personDoc, { examsDone: newCount });
-            if (newCount === personData.totalExams) launchConfetti();
-          }
-        };
-      });
-    }
-
-    document.getElementById("addPersonBtn").onclick = async () => {
-      const name = nameInput.value.trim();
-      const totalExams = parseInt(examsInput.value);
-      if (name && totalExams > 0) {
-        const newDoc = doc(db, "people", name);
-        await setDoc(newDoc, {
-          id: name,
-          name,
-          examsDone: 0,
-          totalExams
-        });
-        nameInput.value = '';
-        examsInput.value = '';
-      }
-    };
-
-    onSnapshot(peopleCollection, (snapshot) => {
-      const people = snapshot.docs.map(doc => doc.data());
-      render(people);
-    });
-
-    function launchConfetti() {
-      const canvas = document.getElementById('confetti');
-      canvas.style.display = 'block';
-      const context = canvas.getContext('2d');
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      for (let i = 0; i < 100; i++) {
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        context.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
-        context.beginPath();
-        context.arc(x, y, 5, 0, Math.PI * 2);
-        context.fill();
-      }
-      setTimeout(() => { canvas.style.display = 'none'; }, 2000);
-    }
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oxford Exam Progress Tracker 🛶</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -223,14 +113,116 @@
 </head>
 <body>
   <h1>Oxford Exam Progress Tracker 🛶</h1>
-
   <div class="add-form">
-    <input type="text" id="newName" placeholder="Name" />
-    <input type="number" id="newExams" placeholder="Total Exams" min="1" />
+    <input type="text" id="newName" placeholder="Name">
+    <input type="number" id="newExams" placeholder="Total Exams" min="1">
     <button id="addPersonBtn">Add Person</button>
   </div>
-
   <div class="tracker" id="tracker"></div>
   <canvas class="confetti" id="confetti"></canvas>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDpeNORHi1DHk23DRS9GFjAFOahjiw4E1E",
+      authDomain: "almost-there-60b1c.firebaseapp.com",
+      projectId: "almost-there-60b1c",
+      storageBucket: "almost-there-60b1c.firebasestorage.app",
+      messagingSenderId: "651608453662",
+      appId: "1:651608453662:web:78e0452ca30c135fe7740f",
+      measurementId: "G-6FVP04T5BV"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const tracker = document.getElementById("tracker");
+    const nameInput = document.getElementById("newName");
+    const examsInput = document.getElementById("newExams");
+
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti');
+      canvas.style.display = 'block';
+      const context = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      for (let i = 0; i < 100; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        context.fillStyle = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        context.beginPath();
+        context.arc(x, y, 5, 0, Math.PI * 2);
+        context.fill();
+      }
+      setTimeout(() => { canvas.style.display = 'none'; }, 2000);
+    }
+
+    function render(people) {
+      tracker.innerHTML = '';
+      people.forEach((person) => {
+        const percent = Math.min((person.examsDone / person.totalExams) * 100, 100);
+        const finished = person.examsDone === person.totalExams;
+
+        const landmarks = `
+          <div class="landmarks">
+            <span style="left: 0%">🌉</span>
+            <span style="left: 25%">📚</span>
+            <span style="left: 50%">🏛</span>
+            <span style="left: 75%">🎼</span>
+            <span style="left: 100%">🎓</span>
+          </div>`;
+
+        const div = document.createElement("div");
+        div.className = "person";
+        div.innerHTML = `
+          <div class="avatar">${finished ? '🎓' : person.name[0]}</div>
+          <div class="info">
+            <div class="river-scene">
+              ${landmarks}
+              <div class="punt" style="left: ${percent}%">🛶</div>
+            </div>
+            <div class="controls">
+              <strong>${person.name}</strong>
+              <span>${person.examsDone} / ${person.totalExams} exams done</span>
+              <button data-id="${person.id}" class="increment-btn">Finished Exam</button>
+            </div>
+          </div>
+        `;
+        tracker.appendChild(div);
+      });
+
+      document.querySelectorAll(".increment-btn").forEach(button => {
+        button.onclick = async () => {
+          const id = button.dataset.id;
+          const personDoc = db.collection("people").doc(id);
+          const docSnap = await personDoc.get();
+          const personData = docSnap.data();
+          if (personData.examsDone < personData.totalExams) {
+            const newCount = personData.examsDone + 1;
+            await personDoc.update({ examsDone: newCount });
+            if (newCount === personData.totalExams) launchConfetti();
+          }
+        };
+      });
+    }
+
+    document.getElementById("addPersonBtn").onclick = async () => {
+      const name = nameInput.value.trim();
+      const totalExams = parseInt(examsInput.value);
+      if (name && totalExams > 0) {
+        await db.collection("people").doc(name).set({
+          id: name,
+          name,
+          examsDone: 0,
+          totalExams
+        });
+        nameInput.value = '';
+        examsInput.value = '';
+      }
+    };
+
+    db.collection("people").onSnapshot((snapshot) => {
+      const people = snapshot.docs.map(doc => doc.data());
+      render(people);
+    });
+  </script>
 </body>
 </html>
