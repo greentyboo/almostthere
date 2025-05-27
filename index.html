@@ -44,6 +44,7 @@
     const peopleCollection = collection(db, "people");
 
     const tracker = document.getElementById("tracker");
+    const halloffame = document.getElementById("halloffame")
     const nameInput = document.getElementById("newName");
     const examsInput = document.getElementById("newExams");
 
@@ -52,15 +53,6 @@
       people.forEach((person) => {
         const percent = Math.min((person.examsDone / person.totalExams) * 100, 100);
         const finished = person.examsDone === person.totalExams;
-
-        const landmarks = `
-          <div class="landmarks">
-            <span style="left: 0%">🌉</span>
-            <span style="left: 25%">📚</span>
-            <span style="left: 50%">🏛</span>
-            <span style="left: 75%">🎼</span>
-            <span style="left: 100%">🎓</span>
-          </div>`;
 
         const div = document.createElement("div");
         div.className = "person";
@@ -78,6 +70,15 @@
             </div>
           </div>
         `;
+        if (finished) {
+          const halloffamer = document.createElement("div");
+          halloffamer.className = "halloffamer";
+          halloffamer.innerHTML = `
+            <div>${person.name}<div>
+          `;
+          halloffame.appendChild(halloffamer)
+        }
+        const halloffamer = document.createElement
         tracker.appendChild(div);
       });
 
@@ -235,6 +236,28 @@
       z-index: 9999;
       display: none;
     }
+    .halloffame {
+      width: 200px;
+      height: fit-content;
+      min-height: 200px;
+      border-width: 1px;
+      border: solid;
+      position: absolute;
+      background-color: lightyellow;
+      text-align: center;
+      font-weight: 900;
+      font-size: larger;
+    }
+    .halloffamer {
+      position: relative;
+      border: 1px;
+      border: solid;
+      margin: 5px;
+      border-radius: 5px;
+      background-color: white;
+      font-weight: 700;
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -246,6 +269,8 @@
     <button id="addPersonBtn">Add Person</button>
   </div>
 
+  
+  <div class="halloffame" id="halloffame">HALL OF FAME</div>
   <div class="tracker" id="tracker"></div>
   <canvas class="confetti" id="confetti"></canvas>
 </body>
