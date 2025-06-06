@@ -67,7 +67,7 @@
 
     function render(people) {
       tracker.innerHTML = '';
-      halloffame.innerHTML = 'SUNNY DAYS HEADSHIP';
+      halloffame.innerHTML = '<div>SUNNY DAYS HEADSHIP</div>';
       people.forEach((person) => {
         const percent = Math.min((person.examsDone / person.totalExams) * 100, 100);
         const finished = person.examsDone === person.totalExams;
