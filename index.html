@@ -7,28 +7,41 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getFirestore, collection, getDocs, updateDoc, doc, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-    const messages = [
-      "You're doing amazing, keep going! 🌟",
-      "Another step closer! You've got this! 💪",
-      "You're crushing it — exam by exam! 📘",
-      "Brilliant progress! Keep that momentum! 🚀",
-      "Oxford would be proud — keep punting! 🛶",
-      "Each click is a win — you're nearly there! 🎯",
-      "You're in the home stretch now! 🏁",
-      "Stay focused — excellence is near! 🎓",
-      "You're one exam wiser! 📚"
+    //
+    //const messages = [
+     // "You're doing amazing, keep going! 🌟",
+     // "Another step closer! You've got this! 💪",
+     // "You're crushing it — exam by exam! 📘",
+    //  "Brilliant progress! Keep that momentum! 🚀",
+     // "Oxford would be proud — keep punting! 🛶",
+    //  "Each click is a win — you're nearly there! 🎯",
+   //   "You're in the home stretch now! 🏁",
+    //  "Stay focused — excellence is near! 🎓",
+    //  "You're one exam wiser! 📚"
+   // ];
+    const memes = [
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-1.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-2.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-3.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-4.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-5.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-6.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-7.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-8.png?raw=true",
+  "https://github.com/greentyboo/almostthere/blob/main/memes/meme-9.png?raw=true"
     ];
 
-    function showPopupMessage(name) {
-      const message = messages[Math.floor(Math.random() * messages.length)];
-      const popup = document.getElementById(`${name}-popup`);
-      popup.textContent = message;
-      popup.style.display = 'block';
-      setTimeout(() => {
-        popup.textContent = '';
-        popup.style.display = 'none';
-      }, 3500);
-    }
+    function showPopupMeme(name) {
+  const memeUrl = memes[Math.floor(Math.random() * memes.length)];
+  const popup = document.getElementById(`${name}-popup`);
+  popup.innerHTML = `<img src="${memeUrl}" style="max-width: 100%; max-height: 200px; border-radius: 8px;" />`;
+  popup.style.display = 'block';
+  setTimeout(() => {
+    popup.innerHTML = '';
+    popup.style.display = 'none';
+  }, 4000);
+}
+
     const firebaseConfig = {
       apiKey: "AIzaSyDpeNORHi1DHk23DRS9GFjAFOahjiw4E1E",
       authDomain: "almost-there-60b1c.firebaseapp.com",
@@ -94,7 +107,7 @@
           if (personData && personData.examsDone < personData.totalExams) {
             const newCount = personData.examsDone + 1;
             await updateDoc(personDoc, { examsDone: newCount });
-            showPopupMessage(personData.name);
+            showPopupMeme(personData.name);
             if (newCount === personData.totalExams) launchConfetti();
           }
         };
